@@ -1,0 +1,16 @@
+{
+  "name": "movie_server",
+  "version": "1.0.0",
+  "description": "A movie server's file watcher module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "abrarshariar.com",
+  "license": "ISC",
+  "dependencies": {
+    "chokidar": "^1.6.1",
+    "imdb-api": "^2.2.1",
+    "mysql": "^2.13.0"
+  }
+}
