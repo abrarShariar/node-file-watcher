@@ -20,17 +20,17 @@ connection.connect(function(err) {
 let file_ext = ['mkv','mp4','flv','wmv','mov'];
 chokidar.watch('.', {ignored: /[\/\\]\./}).on('all', (event, path) => {
 	let full_path = path;
+	let separated_path = full_path.split('/');
+	let last_item = separated_path[separated_path.length - 1];
+	let ext = last_item.split('.');
+	let check = false;
+	file_ext.map(function(element){
+		if(element === ext[ext.length - 1]){
+			check = true;
+		}
+	});	
 	//for add event
 	if(event == 'addDir' || event == 'add'){
-		let separated_path = full_path.split('/');
-		let last_item = separated_path[separated_path.length - 1];
-		let ext = last_item.split('.');
-		let check = false;
-		file_ext.map(function(element){
-			if(element === ext[ext.length - 1]){
-				check = true;
-			}
-		});	
 		//get data from imdb api
 		if(check){
 			let name = separated_path[separated_path.length - 2];
@@ -80,7 +80,6 @@ chokidar.watch('.', {ignored: /[\/\\]\./}).on('all', (event, path) => {
 							if (error) throw error;
 						});
 						console.log(query.sql);
-
 					},function(err){
 						//insert data into DB
 						let data = { title:title, type:type, languages:languages, genres:genres, video_path:full_path };
@@ -95,6 +94,13 @@ chokidar.watch('.', {ignored: /[\/\\]\./}).on('all', (event, path) => {
 	}
 	//for delete event
 	if(event == 'unlink' || event == 'unlinkDir'){
-
+		if(check){
+			let del_name = separated_path[separated_path.length - 2];
+			//delete data from DB
+			let query = connection.query('DELETE FROM `all_videos` WHERE `title` = ?', [del_name] ,function (error, results, fields) {
+				if (error) throw error;
+			});
+			console.log(query.sql);
+		}
 	}
 });
